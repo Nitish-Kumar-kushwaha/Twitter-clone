@@ -5,6 +5,11 @@ const path = require("path");
 const session = require("express-session");
 const flash = require("connect-flash");
 
+const passport = require("passport");
+const LocalStratergy = require("passport-local");
+const User = require("./models/user");
+const { isLoggedIn } = require("./middleware");
+
 // const ejsLint = require('ejs-lint');
 
 mongoose
@@ -39,10 +44,19 @@ app.use(
   })
 );
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+//For authentication
+passport.use(new LocalStratergy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use(authRoutes);
 // app.use(ejsLint)
 
-app.get("/", function (req, res) {
+app.get("/", isLoggedIn, function (req, res) {
   res.render("home");
 });
 
