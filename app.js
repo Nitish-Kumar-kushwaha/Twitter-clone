@@ -31,10 +31,15 @@ app.set("views", path.join(__dirname, "/views"));
 
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(flash());
 
 // Routes
 const authRoutes = require("./routes/authRoutes");
+
+//APIs
+
+const postApiRoutes = require("./routes/api/post");
 
 app.use(
   session({
@@ -53,11 +58,14 @@ passport.use(new LocalStratergy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+//using routes
 app.use(authRoutes);
-// app.use(ejsLint)
+
+//Using APIs
+app.use(postApiRoutes);
 
 app.get("/", isLoggedIn, function (req, res) {
-  res.render("home");
+  res.render("layouts/main-layout");
 });
 
 app.listen(3000, function () {

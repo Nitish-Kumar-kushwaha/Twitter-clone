@@ -42,7 +42,7 @@ router.post(
     failureRedirect: "/login",
   }),
   (req, res) => {
-    res.render("home");
+    res.redirect("/");
   }
 );
 
